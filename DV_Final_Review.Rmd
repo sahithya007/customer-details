@@ -1,0 +1,585 @@
+---
+title: "Analysing and Visualizing Customer Segmentation"
+author: "AAYUSH SHUKLA 20BCE1500"
+date: "2023-04-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Reg. No: 20BCE1500
+
+### Name:AAYUSH SHUKLA
+
+## Setup
+```{r}
+Mall_Customers <- read.csv("C:/Users/ADMIN/Downloads/Mall_Customers.csv")
+library(dplyr)
+library(lubridate)
+```
+
+
+* * *
+
+## What problem are you trying to solve?
+ 
+ We are trying to help companies to deploy customer segmentation. Customer Segmentation is the process of division of customer base into several groups of individuals that share a similarity in different ways that are relevant to marketing such as gender, age, interests, and miscellaneous spending habits.
+ 
+* * *
+
+
+
+* * *
+
+## What data have you chosen?(Chosen Dataset, Source of dataset, Description of dataset, basic commands to describe dataset)
+```{r}
+(Mall_Customers)
+#retail<-Mall_Customers
+#retail$Date <- gsub('/', '-', retail$Date)
+#r2<- retail %>% 
+#  mutate(DATE=mdy(DATE)) %>% 
+#    select(everything())
+#retailA<- filter(r2, Branch=='A')
+#retailB<- filter(r2, Branch=='B')
+#retailC<- filter(r2, Branch=='C')
+#retailAsum<- group_by(retailA, DATE, Product.line)%>% select(everything())
+#retailAsum<- summarise(retailAsum, daytotal=sum(Total))%>% select(everything())
+str(Mall_Customers)
+names(Mall_Customers)
+dim(Mall_Customers)
+head(Mall_Customers)
+summary(Mall_Customers)
+
+```
+* * *
+
+* * *
+
+## Frame your objectives
+
+### Customer Gender Visualization
+In this, we will create a barplot and a piechart to show the gender distribution across our customer_data dataset.
+
+### Analysis of the Annual Income of the Customers
+In this section of the R project, we will create visualizations to analyze the annual income of the customers. We will plot a histogram and then we will proceed to examine this data using a density plot.
+
+### Visualization of Age Distribution
+
+### Analyzing Spending Score of the Customers
+
+### Determining Optimal Clusters
+
+### K-means clustering 
+We specify the number of clusters that we need to create. The algorithm selects k objects at random from the dataset. This object is the initial cluster or mean. The closest centroid obtains the assignment of a new observation. We base this assignment on the Euclidean Distance between object and the centroid. k clusters in the data points update the centroid through calculation of the new mean values present in all the data points of the cluster. The kth cluster’s centroid has a length of p that contains means of all variables for observations in the k-th cluster. We denote the number of variables with p. Iterative minimization of the total within the sum of squares. Then through the iterative minimization of the total sum of the square, the assignment stop wavering when we achieve maximum iteration. The default value is 10 that the R software uses for the maximum iterations.
+
+
+
+
+
+<font size=10> 
+<center>***Customer Analysis*** </center></font>
+
+### Customer Gender Visualization
+
+In this, we will create a barplot and a piechart to show the gender distribution across our customer_data dataset.
+```{r}
+a=table(Mall_Customers$Gender)
+Barplot_Gender_Comparision <- function(){
+barplot(a,main="Using BarPlot to display Gender Comparision", ylab="Count", xlab="Gender", col=rainbow(2),legend=rownames(a))
+}
+Barplot_Gender_Comparision()
+```
+
+From the above barplot, we observe that the number of females is higher than the males. Now, let us visualize a pie chart to observe the ratio of male and female distribution.
+(Learnt from online "plotrix library")
+```{r}
+Ratio_Male_and_Female <- function(){
+pct=round(a/sum(a)*100)
+lbs=paste(c("Female","Male")," ",pct,"%",sep=" ")
+library(plotrix)
+pie3D(a,labels=lbs,
+   main="Pie Chart Depicting Ratio of Female and Male")
+}
+Ratio_Male_and_Female()
+```
+
+### Visualization of Age Distribution
+Let us plot a histogram to view the distribution to plot the frequency of customer ages. We will first proceed by taking summary of the Age variable.
+
+```{r}
+Histogram_count_of_Age_Class <- function(){
+hist(Mall_Customers$Age,
+    col="blue",
+    main="Histogram to Show Count of Age Class",
+    xlab="Age Class",
+    ylab="Frequency",
+    labels=TRUE)
+}
+Histogram_count_of_Age_Class()
+```
+
+Barplot 
+
+```{r}
+Boxplot_Descriptive_Analysis_of_Age <- function(){
+boxplot(Mall_Customers$Age,
+       col="pink",
+       main="Boxplot for Descriptive Analysis of Age")
+}
+Boxplot_Descriptive_Analysis_of_Age()
+```
+
+From the above two visualizations, we conclude that the maximum customer ages are between 30 and 35. The minimum age of customers is 18, whereas, the maximum age is 70.
+
+### Analysis of the Annual Income of the Customers
+
+In this section of the R project, we will create visualizations to analyze the annual income of the customers. We will plot a histogram and then we will proceed to examine this data using a density plot.
+
+```{r}
+
+summary(Mall_Customers$Annual.Income..k..)
+Histogram_Annual_Income <- function(){
+hist(Mall_Customers$Annual.Income..k..,
+  col="purple",
+  main="Histogram for Annual Income",
+  xlab="Annual Income Class",
+  ylab="Frequency",
+  labels=TRUE)
+}
+Histogram_Annual_Income()
+```
+
+```{r}
+Density_plot_for_annual_income <- function(){
+plot(density(Mall_Customers$Annual.Income..k..),
+    col="yellow",
+    main="Density Plot for Annual Income",
+    xlab="Annual Income Class",
+    ylab="Density")
+polygon(density(Mall_Customers$Annual.Income..k..),
+        col="lightgreen")
+}
+Density_plot_for_annual_income()
+```
+
+From the above descriptive analysis, we conclude that the minimum annual income of the customers is 15 and the maximum income is 137. People earning an average income of 70 have the highest frequency count in our histogram distribution. The average salary of all the customers is 60.56. 
+
+### Analyzing Spending Score of the Customers
+
+```{r}
+summary(Mall_Customers$Spending.Score..1.100.)
+BoxPlot_Spending_Score <- function(){
+boxplot(Mall_Customers$Spending.Score..1.100.,
+   horizontal=TRUE,
+   col="brown",
+   main="BoxPlot for Descriptive Analysis of Spending Score")
+}
+BoxPlot_Spending_Score()
+```
+
+```{r}
+Histogram_Spending_Score <-function(){
+hist(Mall_Customers$Spending.Score..1.100.,
+    main="HistoGram for Spending Score",
+    xlab="Spending Score Class",
+    ylab="Frequency",
+    col="lightyellow",
+    labels=TRUE)
+}
+Histogram_Spending_Score()
+```
+
+The minimum spending score is 1, maximum is 99 and the average is 50.20. We can see Descriptive Analysis of Spending Score is that Min is 1, Max is 99 and avg. is 50.20. From the histogram, we conclude that customers between class 40 and 50 have the highest spending score among all the classes.
+
+<font size=7 >
+<center>***Product Analyzing*** </center> 
+</font >
+
+```{r}
+retail<-Mall_Customers
+```
+```{r}
+retail$Date <- gsub('/', '-', retail$Date)
+
+r2 <- retail %>% 
+  mutate(DATE=mdy(Date))%>%
+  select(everything())
+
+
+
+
+retailA<- filter(r2, Branch=='A')
+retailB<- filter(r2, Branch=='B')
+retailC<- filter(r2, Branch=='C')
+
+retailAsum <- group_by(retailA, DATE, Product.line) %>% select(everything())
+retailAsum<- summarise(retailAsum, daytotal=sum(Total)) %>% select(everything())
+
+retailBsum <- group_by(retailB, DATE, Product.line) %>% select(everything())
+retailBsum<- summarise(retailBsum, daytotal=sum(Total)) %>% select(everything())
+
+```
+
+
+```{r}
+library(ggplot2)
+Plot_Count_of_Branch <- function(){
+ggplot (data=retail)+
+  geom_bar(mapping=aes(x=Branch,fill=Branch))
+}
+Plot_Count_of_Branch()
+```
+
+This graph shows the number of transactions per store over the period. It appears that store A sells slightly more than B, which sells more than C
+
+```{r}
+Plot_Products_count <- function(){
+ggplot (data=retail)+
+  geom_bar(mapping=aes(x=Branch, fill=Product.line), position="dodge")
+}
+Plot_Products_count()
+```
+
+This graph shows quantity of sales per category. It appears that each store has a certain category that they sell more of than the other stores. This would benefit from futher analysis in order to determine the cause, e.g if the customer needs are different or if perhaps the products are not being displayed in an efficient manner.
+
+
+```{r}
+Plot_Rating_Of_Branch <- function(){
+ggplot(data=retail) +
+    geom_density(mapping=aes(x=Rating, fill=Branch), alpha=.3)
+}
+Plot_Rating_Of_Branch()
+
+Boxplot_Rating_of_Branch <- function(){
+ggplot (data=retail)+
+  geom_boxplot(mapping=aes(x=Rating, fill=Branch), position="dodge")+
+    coord_flip()
+}
+Boxplot_Rating_of_Branch()
+
+Plot_Ratings_of_Products <- function(){
+ggplot (data=retail)+
+  geom_boxplot(mapping=aes(x=Rating, fill=Product.line), position="dodge")+
+    facet_wrap(~Branch, nrow=3)
+}
+Plot_Ratings_of_Products()
+```
+
+The first graph shows the distribution of the ratings per branch The second is a boxplot representing the statistical summary of the branch The third is a boxplot representing the ratings per product line by branch
+
+The first graph is perhaps the most imporant here. While the second graph shows branches A and C have similar ratings based on the average, we can see that branch C has a sort of double hump distribution. This represents a large amount of moderately dissatisfied customers (rating of about 6) and reasonably satisfied customers (rating about 8). Meanwhile, the bulk of branch A's ratings are centered around 7. On the other hand, branch B has obviously lower ratings than the other 2. This indicates that each branch may need a separate strategy in order to bring customer satisfaction up.
+
+The third graph could be used to fine tune the strategy to increase customer satisfaction. We can see that the rating distrubution for product lines in each branch vary significantly. Perhaps the most interesting observation is in branch B. The ratings for nearly every category are either similar or less than the ratings of the other stores. However, it appears that the food and beverage category has a significantly better average rating than the other categories as well as the other stores. This would be a key insight for further analysis in determining a course of action for customer satisfaction improvement.
+
+```{r}
+Boxplot_Total_Product_count <- function(){
+ggplot(data=retail, mapping=aes(x=Product.line, y=Total, color=Branch))+
+  geom_boxplot()+
+  coord_flip()
+}
+Boxplot_Total_Product_count()
+Barplot_Product_count <- function(){
+ggplot (data=retail)+
+  geom_bar(mapping=aes(x=Branch, fill=Product.line), position="dodge") +
+    coord_flip()
+}
+Barplot_Product_count()
+```
+The first graph shows the range of sales totals based on the category, the second graph is like the second graph above except flipped for easier comparison
+
+A key observation from these graphs is the relatively low number of health and beauty purchases for branch A, as well as a relatively small range of purchase totals for health and beauty, as well as food and beverages.
+
+This could be explained by the demographic, which could be urban/city in for this location. These locations, which are more populous, also tend to have smaller household sizes. This could explain the larger number of total transactions for this branch, but the smaller range and average of individual purchase totals for household consumables.
+
+More analysis is needed but perhaps this store would benefit by removing slow moving products, such as family oriented value size packs, and replacing them with products from a better performing category
+
+Another key observation from these graphs is a relatively low number of sales for Sports and Travel as well as Home and Lifestyle for branch C. While the sports and lifestyle total range is similar to the other stores, the home and lifestyle range is smaller. A possible explanation for this is that this location is near a freeway, and attracts more "transient" customers who do not want to purchase large items such as these as they are far from home. This store would likely benefit from a reduction of inventory size from these categories.
+
+The next analyses we will do will be based on each store over time. However, the data is not in a useable format yet. We need to divide the dataset up by store as well as transform the date data into a universal format. We will also aggregate the data based on total sales per day per product line
+
+```{r}
+Plot_Product_daytotal <- function(){
+ggplot(data=retailAsum)+
+    geom_smooth(mapping=aes(x=DATE, y=daytotal ,color=Product.line))
+}
+Plot_Product_daytotal()
+Plot_Date_daytotal <- function(){
+ggplot(data=retailAsum)+
+    geom_smooth(mapping=aes(x=DATE, y=daytotal))
+}
+Plot_Date_daytotal()
+Plots_daytotal_Date<- function(){
+ggplot(data=retailAsum) +
+    geom_smooth(mapping=aes(x=DATE, y=daytotal)) +
+    facet_wrap(~Product.line, nrow=3)
+}
+Plots_daytotal_Date()
+```
+
+While this graph is a little difficult to see, it shows the monetary value of the total sales per day per product line over the time period. This type of graph could be extremely useful in seasonal displays and advertising. We can clearly see that sports and travel sales spike towards the spring, while electronic accessories falls severly after january. These are fairly obvious seasonal changes, but the other trends shown by this graph indicate they are not the only ones. Food and beverage has a strange wavy pattern with a strong climb in late march. Health and beauty/home and lifestyle follow similar trends that converge by the end of March.
+
+The second graph shows the trendline of the total per day for location A. It is similar to the above graph but without the categories. From it we see there is a decline in sales during Feburary, with an uptick in March.
+
+The observations from these charts would be a great start towards creating a machine learning model to analyze sales trends vs month of year in order to create bundles, optimize high traffic displays, and in advertising.
+
+The third chart included is just the first chart broken up. It is easier to see individual trends but more difficult to see comparative trends. Both graphs serve a purpose here
+
+```{r}
+
+retailAsum <- retailAsum %>%
+  mutate(
+    Month=month(DATE)
+  )
+
+retailAsum <- retailAsum %>%
+  mutate(
+    DayofWeek=wday(DATE)
+  )
+
+retailAsum <- retailAsum %>%
+  mutate(
+    DayofYear=yday(DATE)
+  )
+
+BarChart_Products_Days <- function(){
+ggplot(data=retailAsum)+
+    geom_bar(mapping=aes(x=DayofWeek, y=daytotal, fill=Product.line),stat='identity')
+}
+BarChart_Products_Days()
+BarChart_Products_Month <- function(){
+ggplot(data=retailAsum)+
+    geom_bar(mapping=aes(x=Month, y=daytotal, fill=Product.line),stat='identity')
+}
+BarChart_Products_Month()
+Boxplot_Dayofweek_Daytotal <-function(){
+ggplot(data=retailAsum)+
+    geom_boxplot(mapping=aes(x=DayofWeek, y=daytotal, group=DayofWeek))
+}
+Boxplot_Dayofweek_Daytotal()
+Plot_dayOfYear_DayTotal <- function(){
+ggplot(data=retailAsum)+
+    geom_smooth(mapping=aes(x=DayofYear, y=daytotal, color=Product.line))
+}
+Plot_dayOfYear_DayTotal()
+```
+
+
+
+<font size=5>
+<center>***K-means*** </center> 
+</font >
+
+While using the k-means clustering algorithm, the first step is to indicate the number of clusters (k) that we wish to produce in the final output. The algorithm starts by selecting k objects from dataset randomly that will serve as the initial centers for our clusters. These selected objects are the cluster means, also known as centroids. Then, the remaining objects have an assignment of the closest centroid. This centroid is defined by the Euclidean Distance present between the object and the cluster mean. We refer to this step as “cluster assignment”. When the assignment is complete, the algorithm proceeds to calculate new mean value of each cluster present in the data. After the recalculation of the centers, the observations are checked if they are closer to a different cluster. Using the updated cluster mean, the objects undergo reassignment. This goes on repeatedly through several iterations until the cluster assignments stop altering. The clusters that are present in the current iteration are the same as the ones obtained in the previous iteration.
+
+If you want to work one of the major challenges then knowledge Big Data is crucial. Therefore, I recommend to check out Hadoop for Data Science.
+
+Summing up the K-means clustering –
+
+We specify the number of clusters that we need to create.
+The algorithm selects k objects at random from the dataset. This object is the initial cluster or mean.
+The closest centroid obtains the assignment of a new observation. We base this assignment on the Euclidean Distance between object and the centroid.
+k clusters in the data points update the centroid through calculation of the new mean values present in all the data points of the cluster. The kth cluster’s centroid has a length of p that contains means of all variables for observations in the k-th cluster. We denote the number of variables with p.
+Iterative minimization of the total within the sum of squares. Then through the iterative minimization of the total sum of the square, the assignment stop wavering when we achieve maximum iteration. The default value is 10 that the R software uses for the maximum iterations.
+Determining Optimal Clusters
+While working with clusters, you need to specify the number of clusters to use. You would like to utilize the optimal number of clusters. To help you in determining the optimal clusters, there are three popular methods –
+
+Elbow method\n
+Silhouette method\n
+Gap statistic\n
+
+
+
+#### Elbow Method
+The main goal behind cluster partitioning methods like k-means is to define the clusters such that the intra-cluster variation stays minimum.
+
+minimize(sum W(Ck)), k=1…k
+
+Where Ck represents the kth cluster and W(Ck) denotes the intra-cluster variation. With the measurement of the total intra-cluster variation, one can evaluate the compactness of the clustering boundary. We can then proceed to define the optimal clusters as follows –
+
+First, we calculate the clustering algorithm for several values of k. This can be done by creating a variation within k from 1 to 10 clusters. We then calculate the total intra-cluster sum of square (iss). Then, we proceed to plot iss based on the number of k clusters. This plot denotes the appropriate number of clusters required in our model. In the plot, the location of a bend or a knee is the indication of the optimum number of clusters.
+
+```{r}
+library(purrr)
+set.seed(123)
+# function to calculate total intra-cluster sum of square 
+iss <- function(k) {
+  kmeans(Mall_Customers[,3:5],k,iter.max=100,nstart=100,algorithm="Lloyd" )$tot.withinss
+}
+k.values <- 1:10
+iss_values <- map_dbl(k.values, iss)
+Plot_No_of_clusters_K_VS_total_intra_clusters <- function(){
+plot(k.values, iss_values,
+    type="b", pch = 19, frame = FALSE, 
+    xlab="Number of clusters K",
+    ylab="Total intra-clusters sum of squares")
+}
+Plot_No_of_clusters_K_VS_total_intra_clusters()
+```
+
+### Average Silhouette Method
+
+With the help of the average silhouette method, we can measure the quality of our clustering operation. With this, we can determine how well within the cluster is the data object. If we obtain a high average silhouette width, it means that we have good clustering. The average silhouette method calculates the mean of silhouette observations for different k values. With the optimal number of k clusters, one can maximize the average silhouette over significant values for k clusters.
+
+Using the silhouette function in the cluster package, we can compute the average silhouette width using the kmean function. Here, the optimal cluster will possess highest average.
+
+```{r}
+library(cluster) 
+library(gridExtra)
+library(grid)
+library(dplyr)
+silhouette_s2 <- function(){
+k2<-kmeans(Mall_Customers[,3:5],2,iter.max=100,nstart=50,algorithm="Lloyd")
+s2<-plot(silhouette(k2$cluster,dist(Mall_Customers[,3:5],"euclidean",)),col = "red")
+}
+silhouette_s2()
+silhouette_s3 <- function(){
+k3<-kmeans(Mall_Customers[,3:5],3,iter.max=100,nstart=50,algorithm="Lloyd")
+s3<-plot(silhouette(k3$cluster,dist(Mall_Customers[,3:5],"euclidean")),col = "blue")
+}
+silhouette_s3()
+silhouette_s4 <- function(){
+k4<-kmeans(Mall_Customers[,3:5],4,iter.max=100,nstart=50,algorithm="Lloyd")
+s4<-plot(silhouette(k4$cluster,dist(Mall_Customers[,3:5],"euclidean")),col="green")
+}
+silhouette_s4()
+silhouette_s5 <- function(){
+k5<-kmeans(Mall_Customers[,3:5],5,iter.max=100,nstart=50,algorithm="Lloyd")
+s5<-plot(silhouette(k5$cluster,dist(Mall_Customers[,3:5],"euclidean")),col="orange")
+}
+silhouette_s5()
+silhouette_s6 <- function(){
+k6<-kmeans(Mall_Customers[,3:5],6,iter.max=100,nstart=50,algorithm="Lloyd")
+s6<-plot(silhouette(k6$cluster,dist(Mall_Customers[,3:5],"euclidean")),col = "purple")
+}
+silhouette_s6()
+silhouette_s7 <- function(){
+k7<-kmeans(Mall_Customers[,3:5],7,iter.max=100,nstart=50,algorithm="Lloyd")
+s7<-plot(silhouette(k7$cluster,dist(Mall_Customers[,3:5],"euclidean")),col = "yellow")
+}
+silhouette_s7()
+silhouette_s8 <- function(){
+k8<-kmeans(Mall_Customers[,3:5],8,iter.max=100,nstart=50,algorithm="Lloyd")
+s8<-plot(silhouette(k8$cluster,dist(Mall_Customers[,3:5],"euclidean")),col="pink")
+}
+silhouette_s8()
+silhouette_s9 <- function(){
+k9<-kmeans(Mall_Customers[,3:5],9,iter.max=100,nstart=50,algorithm="Lloyd")
+s9<-plot(silhouette(k9$cluster,dist(Mall_Customers[,3:5],"euclidean")),col="light green")
+}
+silhouette_s9()
+silhouette_s10 <- function(){
+k10<-kmeans(Mall_Customers[,3:5],10,iter.max=100,nstart=50,algorithm="Lloyd")
+s10<-plot(silhouette(k10$cluster,dist(Mall_Customers[,3:5],"euclidean")),col = "black")
+}
+silhouette_s10()
+```
+
+```{r}
+library(NbClust)
+library(factoextra)
+silhouette_No_of_clusters_k_VS_Avg_Silhouette_width<- function(){
+fviz_nbclust(Mall_Customers[,3:5], kmeans, method = "silhouette")
+}
+silhouette_No_of_clusters_k_VS_Avg_Silhouette_width()
+```
+
+## Gap Statistic Method
+
+ We can use this method to any of the clustering method like K-means, hierarchical clustering etc. Using the gap statistic, one can compare the total intracluster variation for different values of k along with their expected values under the null reference distribution of data. With the help of Monte Carlo simulations, one can produce the sample dataset. For each variable in the dataset, we can calculate the range between min(xi) and max (xj) through which we can produce values uniformly from interval lower bound to upper bound.
+
+For computing the gap statistics method we can utilize the clusGap function for providing gap statistic as well as standard error for a given output.
+
+```{r}
+set.seed(125)
+stat_gap <- clusGap(Mall_Customers[,3:5], FUN = kmeans, nstart = 25,
+            K.max = 10, B = 50)
+fviz_gap_stat(stat_gap)
+```
+
+Now, let us take k = 6 as our optimal cluster –
+
+```{r}
+k6<-kmeans(Mall_Customers[,3:5],6,iter.max=100,nstart=50,algorithm="Lloyd")
+```
+
+In the output of our kmeans operation, we observe a list with several key information. From this, we conclude the useful information being –
+
+cluster – This is a vector of several integers that denote the cluster which has an allocation of each point.
+
+totss – This represents the total sum of squares.
+
+centers – Matrix comprising of several cluster centers
+
+withinss – This is a vector representing the intra-cluster sum of squares having one component per cluster.
+
+tot.withinss – This denotes the total intra-cluster sum of squares.
+
+betweenss – This is the sum of between-cluster squares.
+
+size – The total number of points that each cluster holds.
+
+## Visualizing the Clustering Results using the First Two Principle Components
+
+```{r}
+pcclust=prcomp(Mall_Customers[,3:5],scale=FALSE) #principal component analysis
+summary(pcclust)
+
+pcclust$rotation[,1:2]
+
+set.seed(1)
+K_means_Plot_Annual_Income_VS_Spending_Score <- function(){
+ggplot(Mall_Customers, aes(x =Annual.Income..k.., y = Spending.Score..1.100.)) + 
+  geom_point(stat = "identity", aes(color = as.factor(k6$cluster))) +scale_color_discrete(name=" ",breaks=c("1", "2", "3", "4", "5","6"),labels=c("Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Cluster 5","Cluster 6")) +ggtitle("Segments of Mall Customers", subtitle = "Using K-means Clustering")
+}
+K_means_Plot_Annual_Income_VS_Spending_Score()
+```
+
+From the above visualization, we observe that there is a distribution of 6 clusters as follows –
+
+Cluster 6 and 4 – These clusters represent the customer_data with the medium income salary as well as the medium annual spend of salary.
+
+Cluster 1 – This cluster represents the customer_data having a high annual income as well as a high annual spend.
+
+Cluster 3 – This cluster denotes the customer_data with low annual income as well as low yearly spend of income.
+
+Cluster 2 – This cluster denotes a high annual income and low yearly spend.
+
+Cluster 5 – This cluster represents a low annual income but its high yearly expenditure.
+
+```{r}
+K_means_Plot_Spending_Score_VS_Age <- function(){
+ggplot(Mall_Customers, aes(x =Spending.Score..1.100., y =Age)) + 
+  geom_point(stat = "identity", aes(color = as.factor(k6$cluster))) +
+  scale_color_discrete(name=" ",
+                      breaks=c("1", "2", "3", "4", "5","6"),
+                      labels=c("Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Cluster 5","Cluster 6")) +
+  ggtitle("Segments of Mall Customers", subtitle = "Using K-means Clustering")
+}
+K_means_Plot_Spending_Score_VS_Age()
+```
+
+```{r}
+kCols=function(vec){cols=rainbow (length (unique (vec)))
+return (cols[as.numeric(as.factor(vec))])}
+
+digCluster<-k6$cluster; dignm<-as.character(digCluster); # K-means clusters
+Plot_K_means_VS_Classes <- function(){
+plot(pcclust$x[,1:2], col =kCols(digCluster),pch =19,xlab ="K-means",ylab="classes")
+legend("bottomleft",unique(dignm),fill=unique(kCols(digCluster)))
+}
+Plot_K_means_VS_Classes()
+```
+
+Cluster 4 and 1 – These two clusters consist of customers with medium PCA1 and medium PCA2 score.
+
+Cluster 6 – This cluster represents customers having a high PCA2 and a low PCA1.
+
+Cluster 5 – In this cluster, there are customers with a medium PCA1 and a low PCA2 score.
+
+Cluster 3 – This cluster comprises of customers with a high PCA1 income and a high PCA2.
+
+Cluster 2 – This comprises of customers with a high PCA2 and a medium annual spend of income.
+
+With the help of clustering, we can understand the variables much better, prompting us to take careful decisions. With the identification of customers, companies can release products and services that target customers based on several parameters like income, age, spending patterns, etc. Furthermore, more complex patterns like product reviews are taken into consideration for better segmentation.
